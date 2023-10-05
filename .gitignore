@@ -1,0 +1,16 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/jsonstyling
+jsonstyling.so
+jsonstyling.dylib
+jsonstyling.dll
+jsonstyling.a
+jsonstyling.lib
+jsonstyling-test-*
+*.exe
+*.pdb
+*.o
+*.obj
+*.lst
