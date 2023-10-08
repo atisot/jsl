@@ -283,54 +283,53 @@ class Style
 
         return result;
     }
-}
 
-unittest
-{
-    // Тестирование установки и получения свойств
-    auto customStyle = Style.create().width(Dimension(50)).opacity(0.5f).build();
-    assert(customStyle.property!Dimension("width").get == Dimension(50));
-    assert(customStyle.property!float("opacity").get == 0.5f);
-
-    //Тестирование установки и получения свойств состояний
-    auto customStyle2 = Style.create().forState("focus").color(Colors.CORAL).end.build;
-    assert(customStyle2.state("focus").get.property!Color("color").get == Colors.CORAL);
-    assert(customStyle2.stateProperty!Color("focus", "color").get == Colors.CORAL);
-
-    import std.json;
-
-    // 1. Проверка корректного создания стиля без родителя.
+    unittest
     {
-        string jsonString = `{
+        // Тестирование установки и получения свойств
+        auto customStyle = Style.create().width(Dimension(50)).opacity(0.5f).build();
+        assert(customStyle.property!Dimension("width").get == Dimension(50));
+        assert(customStyle.property!float("opacity").get == 0.5f);
+
+        //Тестирование установки и получения свойств состояний
+        auto customStyle2 = Style.create().forState("focus").color(Colors.CORAL).end.build;
+        assert(customStyle2.state("focus").get.property!Color("color").get == Colors.CORAL);
+        assert(customStyle2.stateProperty!Color("focus", "color").get == Colors.CORAL);
+
+        import std.json;
+
+        // 1. Проверка корректного создания стиля без родителя.
+        {
+            string jsonString = `{
             "testStyle": {
                 "parent": null
             }
         }`;
 
-        auto json = parseJSON(jsonString);
-        auto style = Style.parse(json["testStyle"], "testStyle");
-        assert(style.id == "testStyle");
-        assert(style.parentId is null);
-    }
+            auto json = parseJSON(jsonString);
+            auto style = Style.parse(json["testStyle"], "testStyle");
+            assert(style.id == "testStyle");
+            assert(style.parentId is null);
+        }
 
-    // 2. Проверка корректного создания стиля с родителем.
-    {
-        string jsonString = `{
+        // 2. Проверка корректного создания стиля с родителем.
+        {
+            string jsonString = `{
             "testStyle": {
                 "parent": "parentStyle"
             }
         }`;
 
-        auto json = parseJSON(jsonString);
-        auto style = Style.parse(json["testStyle"], "testStyle");
+            auto json = parseJSON(jsonString);
+            auto style = Style.parse(json["testStyle"], "testStyle");
 
-        assert(style.id == "testStyle");
-        assert(style.parentId == "parentStyle");
-    }
+            assert(style.id == "testStyle");
+            assert(style.parentId == "parentStyle");
+        }
 
-    // 3. Проверка обработки свойств.
-    {
-        string jsonString = `{
+        // 3. Проверка обработки свойств.
+        {
+            string jsonString = `{
             "testStyle": {
                 "properties": {
                     "width": "100%",
@@ -339,16 +338,16 @@ unittest
             }
         }`;
 
-        auto json = parseJSON(jsonString);
-        auto style = Style.parse(json["testStyle"], "testStyle");
+            auto json = parseJSON(jsonString);
+            auto style = Style.parse(json["testStyle"], "testStyle");
 
-        assert(style.property!Dimension("width") == Dimension(100, Unit.PERCENT));
-        assert(style.property!Dimension("height") == Dimension(50, Unit.PERCENT));
-    }
+            assert(style.property!Dimension("width") == Dimension(100, Unit.PERCENT));
+            assert(style.property!Dimension("height") == Dimension(50, Unit.PERCENT));
+        }
 
-    // 4. Проверка обработки состояний.
-    {
-        string jsonString = `{
+        // 4. Проверка обработки состояний.
+        {
+            string jsonString = `{
             "testStyle": {
                 "states": {
                     "active": {
@@ -360,20 +359,20 @@ unittest
             }
         }`;
 
-        auto json = parseJSON(jsonString);
-        auto style = Style.parse(json["testStyle"], "testStyle");
+            auto json = parseJSON(jsonString);
+            auto style = Style.parse(json["testStyle"], "testStyle");
 
-        assert(!style.state("active").isNull);
+            assert(!style.state("active").isNull);
 
-        assert(style.state("active")
-                .get.property!Dimension("width") == Dimension(120, Unit.PERCENT));
-    }
+            assert(style.state("active")
+                    .get.property!Dimension("width") == Dimension(120, Unit.PERCENT));
+        }
 
-    // 5. Проверка обработки недопустимых свойств.
-    bool exceptionThrown = false;
-    try
-    {
-        string jsonString = `{
+        // 5. Проверка обработки недопустимых свойств.
+        bool exceptionThrown = false;
+        try
+        {
+            string jsonString = `{
             "testStyle": {
                 "properties": {
                     "invalidProp": "value"
@@ -381,12 +380,13 @@ unittest
             }
         }`;
 
-        auto json = parseJSON(jsonString);
-        auto style = Style.parse(json["testStyle"], "testStyle");
+            auto json = parseJSON(jsonString);
+            auto style = Style.parse(json["testStyle"], "testStyle");
+        }
+        catch (Exception e)
+        {
+            exceptionThrown = true;
+        }
+        assert(exceptionThrown);
     }
-    catch (Exception e)
-    {
-        exceptionThrown = true;
-    }
-    assert(exceptionThrown);
 }
