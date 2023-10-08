@@ -8,7 +8,9 @@ import std.traits;
 import std.ascii;
 import std.conv;
 
-import jsonstyling.types;
+import jsonstyling;
+
+alias Dimensions = Dimension[];
 
 enum props = cast(string[])
 [
@@ -18,12 +20,12 @@ enum props = cast(string[])
     "max-width"                     , Dimension.stringof,
     "min-height"                    , Dimension.stringof,
     "max-height"                    , Dimension.stringof,
-    "margin"                        , Dimension.stringof,
+    "margin"                        , Dimensions.stringof,
     "margin-top"                    , Dimension.stringof,
     "margin-right"                  , Dimension.stringof,
     "margin-bottom"                 , Dimension.stringof,
     "margin-left"                   , Dimension.stringof,
-    "padding"                       , Dimension.stringof,
+    "padding"                       , Dimensions.stringof,
     "padding-top"                   , Dimension.stringof,
     "padding-right"                 , Dimension.stringof,
     "padding-bottom"                , Dimension.stringof,
@@ -69,6 +71,28 @@ bool canFindProperty(string value)
         }
     }
     return false;
+}
+
+string[] propertyNames()
+{
+    string[] p;
+    for (size_t i = 0; i < props.length - 1; i += 2)
+    {
+        p ~= props[i];
+    }
+    return p;
+}
+
+string propertyType(string name)
+{
+    for (size_t i = 0; i < props.length; i += 2)
+    {
+        if (props[i] == name)
+        {
+            return props[i + 1];
+        }
+    }
+    throw new Exception("Property not found: " ~ name);
 }
 
 template addProperties(string[] props, classType)
@@ -150,50 +174,16 @@ float toPixels(Dimension dim, float relativeValue = 1.0)
     }
 }
 
-string color2string(Color color)
+template isEnum(T)
 {
-    if (color.a == 0xFF) // Если альфа-канал полностью прозрачен
-    {
-        return format("#%02X%02X%02X", color.r, color.g, color.b);
-    }
+    static if (is(T == enum))
+        enum bool isEnum = true;
     else
-    {
-        return format("#%02X%02X%02X%02X", color.r, color.g, color.b, color.a);
-    }
+        enum bool isEnum = false;
 }
 
-Color hslToRgb(float h, float s, float l, ubyte a = 255)
+template isSimpleType(T)
 {
-    float r, g, b;
-
-    if (s == 0)
-    {
-        r = g = b = l; // achromatic
-    }
-    else
-    {
-        float hue2rgb(float p, float q, float t)
-        {
-            if (t < 0)
-                t += 1;
-            if (t > 1)
-                t -= 1;
-            if (t < 1.0 / 6.0)
-                return p + (q - p) * 6.0 * t;
-            if (t < 1.0 / 2.0)
-                return q;
-            if (t < 2.0 / 3.0)
-                return p + (q - p) * (2.0 / 3.0 - t) * 6.0;
-            return p;
-        }
-
-        float q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-        float p = 2 * l - q;
-        h /= 360.0;
-        r = hue2rgb(p, q, h + 1.0 / 3.0);
-        g = hue2rgb(p, q, h);
-        b = hue2rgb(p, q, h - 1.0 / 3.0);
-    }
-
-    return Color(to!ubyte(r * 255), to!ubyte(g * 255), to!ubyte(b * 255), a);
+    enum bool isSimpleType = !isEnum!T && (is(T == string) || is(T == bool) || std
+                .traits.isNumeric!T);
 }

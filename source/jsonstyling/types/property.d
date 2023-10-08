@@ -1,4 +1,4 @@
-module jsonstyling.property;
+module jsonstyling.types.property;
 
 import std.conv;
 import std.traits;
@@ -17,7 +17,7 @@ class Property(T) : IProperty
         value = newValue;
     }
 
-    T get() const
+    T get()
     {
         return value;
     }
