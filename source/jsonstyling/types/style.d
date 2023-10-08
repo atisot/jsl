@@ -8,6 +8,9 @@ import std.json;
 import jsonstyling.types;
 import jsonstyling.utils;
 
+/**
+ * Represents a style definition with properties and states.
+ */
 class Style
 {
     private
@@ -18,32 +21,38 @@ class Style
         Style[string] _states;
     }
 
+    /// Private constructor to ensure the use of the builder pattern.
     private this(string id, string parentId = null)
     {
         _id = id;
         _parentId = parentId;
     }
 
+    /// Returns the ID of the style.
     auto id() @property const
     {
         return _id;
     }
 
+    /// Returns the parent ID of the style.
     auto parentId() @property const
     {
         return _parentId;
     }
 
+    /// Checks if a property exists in the style.
     bool propertyExists(string name)
     {
         return ((name in _properties) !is null);
     }
 
+    /// Checks if a state exists in the style.
     bool stateExists(string name)
     {
         return ((name in _states) !is null);
     }
 
+    /// Sets a property for the style.
     void property(T)(string name, T value)
     {
         if(!canFindProperty(name))
@@ -53,6 +62,7 @@ class Style
         _properties[name] = prop;
     }
 
+    /// Gets a property from the style.
     Nullable!T property(T)(string name)
     {
         if (propertyExists(name))
@@ -65,11 +75,13 @@ class Style
         return Nullable!T.init;
     }
 
+    /// Sets a state for the style.
     void state(string name, Style style)
     {
         _states[name] = style;
     }
 
+    /// Gets a state from the style.
     Nullable!Style state(string name)
     {
         if (stateExists(name))
@@ -80,6 +92,7 @@ class Style
         return Nullable!Style.init;
     }
 
+    /// Gets a property from a specific state of the style.
     Nullable!T stateProperty(T)(string stateName, string propName)
     {
         auto state = this.state(stateName);
@@ -96,6 +109,7 @@ class Style
         return Nullable!T.init;
     }
 
+    /// Creates a copy of the style.
     Style copy()
     {
         Style newStyle = new Style(_id, _parentId);
@@ -140,6 +154,9 @@ class Style
         return format(result, _id, _parentId ? _parentId : "null", propertiesStr, statesStr);
     }
 
+    /**
+     * Builder class for constructing a `Style` object.
+     */
     static class StyleBuilder
     { 
         Style style;
@@ -149,31 +166,39 @@ class Style
             style = new Style(id, parentId);
         }
 
+        /// Begins the definition of a state for the style.
         StateStyleBulder forState(string state)
         {
             return new StateStyleBulder(state, this);
         }
 
+        /// Sets a state for the style.
         StyleBuilder state(string name, Style st)
         {
             style.state(name, st.copy);
             return this;
         }
 
+        /// Ends the current state or property definition.
         StyleBuilder end()
         {
             return this;
         }
 
+        /// Constructs the `Style` object.
         Style build()
         {
             return style.copy();
         }
 
         //pragma(msg, addProperties!(props, typeof(this))); // вывод того, что сгенерирует шаблон
+        // Generates methods for setting style properties.
         mixin(addProperties!(props, typeof(this)));
     }
 
+    /**
+     * Builder class for constructing a state within a `Style` object.
+     */
     static class StateStyleBulder : StyleBuilder
     {
         private StyleBuilder parentBuilder;
@@ -186,6 +211,7 @@ class Style
             parentBuilder = builder;
         }
 
+        /// Ends the current state definition and returns to the parent builder.
         override StyleBuilder end()
         {
             parentBuilder.style.state(state, style.copy());
@@ -195,11 +221,13 @@ class Style
         }
     }
 
+    /// Creates a new builder for constructing a `Style` object.
     static StyleBuilder create(string id = null, string parentId = null)
     {
         return new StyleBuilder(id, parentId);
     }
 
+    /// Parses a `Style` object from a JSON value.
     static Style parse(JSONValue json, string styleId)
     {
         Style.StyleBuilder styleBuilder;
@@ -275,7 +303,7 @@ class Style
         {
             string propName = props[i];
             string propType = props[i + 1];
-            string memberName = toMemberName(propName);
+            string memberName = kebab2camel(propName);
 
             result ~= format("case \"%s\":\nstyleBuilder.%s(parseProperty!(%s)(propValue));\nbreak;\n", propName, memberName, propType
             );

@@ -1,5 +1,9 @@
 module jsonstyling.utils;
 
+/**
+ * Module for JSON styling utilities.
+ */
+
 import std.algorithm;
 import std.range;
 import std.format;
@@ -10,8 +14,12 @@ import std.conv;
 
 import jsonstyling;
 
+/// Alias for an array of `Dimension` objects.
 alias Dimensions = Dimension[];
 
+/**
+ * A list of supported style properties and their corresponding types.
+ */
 enum props = cast(string[])
 [
     "width"                         , Dimension.stringof,
@@ -61,6 +69,15 @@ enum props = cast(string[])
     "cursor"                        , Cursor.stringof
 ];
 
+/**
+ * Checks if the given property name exists in the supported properties list.
+ *
+ * Params:
+ *   value = The property name to check.
+ *
+ * Returns:
+ *   `true` if the property exists, `false` otherwise.
+ */
 bool canFindProperty(string value)
 {
     for (size_t i = 0; i < props.length-1; i += 2)
@@ -73,6 +90,12 @@ bool canFindProperty(string value)
     return false;
 }
 
+/**
+ * Retrieves a list of supported property names.
+ *
+ * Returns:
+ *   An array of string containing the property names.
+ */
 string[] propertyNames()
 {
     string[] p;
@@ -83,6 +106,18 @@ string[] propertyNames()
     return p;
 }
 
+/**
+ * Retrieves the type of a given property name.
+ *
+ * Params:
+ *   name = The property name.
+ *
+ * Returns:
+ *   A string representing the type of the property.
+ *
+ * Throws:
+ *   An exception if the property name is not found.
+ */
 string propertyType(string name)
 {
     for (size_t i = 0; i < props.length; i += 2)
@@ -95,6 +130,13 @@ string propertyType(string name)
     throw new Exception("Property not found: " ~ name);
 }
 
+/**
+ * Generates methods for setting style properties based on the provided properties list.
+ *
+ * Params:
+ *   props = The properties list.
+ *   classType = The type of the class where the methods will be added.
+ */
 template addProperties(string[] props, classType)
 {
     const dchar[] addProperties = props
@@ -104,6 +146,16 @@ template addProperties(string[] props, classType)
         .array;
 }
 
+/**
+ * Generates a method for setting a specific style property.
+ *
+ * Params:
+ *   name = The property name.
+ *   type = The type of the property.
+ *
+ * Returns:
+ *   A string containing the generated method.
+ */
 auto propertyGenerator(alias classType)(string name, string type)
 {
     return format(
@@ -114,14 +166,21 @@ auto propertyGenerator(alias classType)(string name, string type)
                return this;
            }
         `,
-        type, toMemberName(name), name, classType.stringof
+        type, kebab2camel(name), name, classType.stringof
     );
 }
 
-string toMemberName(string name)
+/**
+ * Converts a property name from kebab-case to camelCase.
+ *
+ * Params:
+ *   name = The property name in kebab-case.
+ *
+ * Returns:
+ *   The property name in camelCase.
+ */
+string kebab2camel(string name)
 {
-    // Преобразует имя в формат camelCase
-
     string result;
 
     auto parts = name.split("-");
@@ -136,6 +195,16 @@ string toMemberName(string name)
     return result;
 }
 
+/**
+ * Converts a `Dimension` value to pixels.
+ *
+ * Params:
+ *   dim = The `Dimension` value to convert.
+ *   relativeValue = A relative value used for units like `EM`, `REM`, etc.
+ *
+ * Returns:
+ *   The converted value in pixels.
+ */
 float toPixels(Dimension dim, float relativeValue = 1.0)
 {
     switch (dim.unit)
@@ -174,6 +243,15 @@ float toPixels(Dimension dim, float relativeValue = 1.0)
     }
 }
 
+/**
+ * Checks if a type is an enumeration.
+ *
+ * Params:
+ *   T = The type to check.
+ *
+ * Returns:
+ *   `true` if the type is an enumeration, `false` otherwise.
+ */
 template isEnum(T)
 {
     static if (is(T == enum))
@@ -182,6 +260,16 @@ template isEnum(T)
         enum bool isEnum = false;
 }
 
+/**
+ * Checks if a type is a simple type.
+ * Simple types include string, bool, and numeric types.
+ *
+ * Params:
+ *   T = The type to check.
+ *
+ * Returns:
+ *   `true` if the type is a simple type, `false` otherwise.
+ */
 template isSimpleType(T)
 {
     enum bool isSimpleType = !isEnum!T && (is(T == string) || is(T == bool) || std

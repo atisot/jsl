@@ -23,6 +23,9 @@ class Theme
         _parentId = parentId;
     }
 
+    auto id() @property const { return _id; }
+    auto parentId() @property const { return _parentId; }
+
     void style(Style style)
     {
         _styles[style.id] = style;
