@@ -4,6 +4,8 @@ import std.typecons;
 import std.traits;
 import std.algorithm;
 import std.json;
+import std.string;
+import std.conv;
 
 import jsonstyling.types;
 import jsonstyling.utils;
@@ -273,7 +275,7 @@ class Style
         }
         catch (Exception e)
         {
-            throw new Exception("Error in style json");
+            throw new Exception("Error in style json: " ~ e.msg);
         }
 
         return styleBuilder.build;
@@ -281,17 +283,28 @@ class Style
 
     private static T parseProperty(T)(JSONValue propValue)
     {
-        static if (isSimpleType!T || isEnum!T)
+        string propVal;
+        
+        if(propValue.type == JSONType.integer || propValue.type == JSONType.float_)
         {
-            return to!T(propValue.str);
-        }
-        else static if (isArray!T && (T.stringof == Dimensions.stringof))
-        {
-            return Dimension.parseDims(propValue.str);
+            propVal = propValue.to!string;
         }
         else
         {
-            return T.parse(propValue.str);
+            propVal = propValue.str;
+        }
+
+        static if (isSimpleType!T || isEnum!T)
+        {
+            return to!T(propVal.toUpper);
+        }
+        else static if (isArray!T && (T.stringof == Dimensions.stringof))
+        {
+            return Dimension.parseDims(propVal);
+        }
+        else
+        {
+            return T.parse(propVal);
         }
     }
 
