@@ -77,6 +77,24 @@ class Theme
         return theme;
     }
 
+    override string toString() const
+    {
+        import std.string : format;
+        import std.array;
+        import std.conv;
+
+        string result = "Theme(id: %s, parent: %s, styles: { %s })";
+
+        // Преобразование стилей в строку
+        string stylesStr = _styles.byKeyValue
+            .map!(pair => format("%s: { %s }", pair.key, pair.value.toString()))
+            .array
+            .joiner(", ")
+            .to!string;
+
+        return format(result, _id ? _id : "null", _parentId ? _parentId : "null", stylesStr);
+    }
+
     unittest
     {
         import std.json;

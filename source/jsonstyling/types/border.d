@@ -99,7 +99,8 @@ enum BorderStyle
     NONE,
     SOLID,
     DASHED,
-    DOTTED
+    DOTTED,
+    DOUBLE
 }
 
 struct BorderRadius

@@ -2,32 +2,14 @@ module jsonstyling.types.enums;
 
 enum VAlign
 {
-    top,
-    bottom
+    TOP,
+    BOTTOM
 }
 
 enum HAlign
 {
-    left,
-    right
-}
-
-enum Display
-{
-    NONE,
-    BLOCK,
-    INLINE,
-    FLEX,
-    GRID
-}
-
-enum Position
-{
-    STATIC,
-    RELATIVE,
-    ABSOLUTE,
-    FIXED,
-    STICKY
+    LEFT,
+    RIGHT
 }
 
 enum TextAlign

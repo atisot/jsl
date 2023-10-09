@@ -15,6 +15,7 @@ public
     import jsonstyling.types.dim;
     import jsonstyling.types.border;
     import jsonstyling.types.boxshadow;
+    import jsonstyling.types.font;
     import jsonstyling.types.property;
     import jsonstyling.types.style;
     import jsonstyling.types.theme;
