@@ -1,13 +1,12 @@
-module jsonstyling.manager;
+module jsl.manager;
 
 import std.file;
 import std.json;
 import std.typecons;
 
-import jsonstyling;
-import etc.c.curl;
+import jsl;
 
-alias JsonStyling = JsonStylingManager.instance;
+alias JSL = JsonStylingManager.instance;
 
 class JsonStylingManager {
     private {
@@ -39,7 +38,7 @@ class JsonStylingManager {
     {
         if (themeId !in _themes)
         {
-            throw new JsonStylingException("Cannot set theme " ~ themeId ~ " as current, it was not found");
+            throw new JSLException("Cannot set theme " ~ themeId ~ " as current, it was not found");
         }
         _currentThemeId = themeId;
     }
@@ -106,12 +105,12 @@ class JsonStylingManager {
             auto prop = findPropertyInTheme!T(currentTheme.get, styleId, propName);
             if (prop.isNull)
             {
-                throw new JsonStylingException("Property " ~ propName ~ " for style `" ~ styleId ~ "` not found");
+                throw new JSLException("Property `" ~ propName ~ "` for style `" ~ styleId ~ "` not found");
             }
             return prop.get;
         }
 
-        throw new JsonStylingException("No current theme");
+        throw new JSLException("No current theme");
     }
 
     private Nullable!T findPropertyInTheme(T)(Theme theme, string styleId, string propName)

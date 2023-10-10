@@ -1,4 +1,4 @@
-module jsonstyling.utils;
+module jsl.utils;
 
 /**
  * Module for JSON styling utilities.
@@ -12,7 +12,7 @@ import std.traits;
 import std.ascii;
 import std.conv;
 
-import jsonstyling;
+import jsl;
 
 /// Alias for an array of `Dimension` objects.
 alias Dimensions = Dimension[];

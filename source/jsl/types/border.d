@@ -1,6 +1,7 @@
-module jsonstyling.types.border;
+module jsl.types.border;
 
-import jsonstyling.types;
+import jsl.types;
+import jsl.exceptions;
 
 import std.typecons;
 import std.typetuple;
@@ -45,7 +46,7 @@ struct Border
                     }
                     catch (Exception e2)
                     {
-                        throw new Exception("Invalid frame property entry format: " ~ input);
+                        throw new ThemeParseException("Invalid frame property entry format: " ~ input);
                     }
                 }
             }

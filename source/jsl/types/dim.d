@@ -1,7 +1,7 @@
-module jsonstyling.types.dim;
+module jsl.types.dim;
 
-import jsonstyling.types;
-import jsonstyling.exceptions;
+import jsl.types;
+import jsl.exceptions;
 
 import std.regex;
 import std.string;
@@ -90,7 +90,7 @@ struct Dimension
                 dim.unit = Unit.PERCENT;
                 break;
             default:
-                throw new Exception(
+                throw new ThemeParseException(
                     "Invalid dimension format with `" ~ input ~ "`: Unknown unit '" ~ match[3] ~ "'.");
             }
         }
@@ -162,7 +162,7 @@ struct Dimension
 
         if (components.length > 4)
         {
-            throw new Exception("Invalid input: More than 4 values provided.");
+            throw new ThemeParseException("Invalid input: More than 4 values provided for: " ~ input);
         }
 
         Dimension[] dimensions;

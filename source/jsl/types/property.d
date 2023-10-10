@@ -1,4 +1,4 @@
-module jsonstyling.types.property;
+module jsl.types.property;
 
 import std.conv;
 import std.traits;

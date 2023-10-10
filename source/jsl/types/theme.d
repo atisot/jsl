@@ -1,7 +1,7 @@
-module jsonstyling.types.theme;
+module jsl.types.theme;
 
-import jsonstyling.types;
-import jsonstyling.utils;
+import jsl.types;
+import jsl.utils;
 
 import std.algorithm;
 import std.typecons;

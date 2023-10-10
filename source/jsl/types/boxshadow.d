@@ -1,7 +1,7 @@
-module jsonstyling.types.boxshadow;
+module jsl.types.boxshadow;
 
-import jsonstyling.types;
-import jsonstyling.exceptions;
+import jsl.types;
+import jsl.exceptions;
 
 import std.string;
 

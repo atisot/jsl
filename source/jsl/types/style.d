@@ -1,4 +1,4 @@
-module jsonstyling.types.style;
+module jsl.types.style;
 
 import std.typecons;
 import std.traits;
@@ -7,9 +7,9 @@ import std.json;
 import std.string;
 import std.conv;
 
-import jsonstyling.types;
-import jsonstyling.utils;
-import jsonstyling.exceptions;
+import jsl.types;
+import jsl.utils;
+import jsl.exceptions;
 
 /**
  * Represents a style definition with properties and states.
@@ -59,7 +59,7 @@ class Style
     void property(T)(string name, T value)
     {
         if(!canFindProperty(name))
-            throw new JsonStylingException(format("The %s style property is not valid", name));
+            throw new JSLException(format("The %s style property is not valid", name));
 
         auto prop = new Property!T(value);
         _properties[name] = prop;

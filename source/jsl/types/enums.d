@@ -1,4 +1,4 @@
-module jsonstyling.types.enums;
+module jsl.types.enums;
 
 enum VAlign
 {

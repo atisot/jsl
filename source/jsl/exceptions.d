@@ -1,10 +1,10 @@
-module jsonstyling.exceptions;
+module jsl.exceptions;
 
-import jsonstyling;
+import jsl;
 
 import std.exception;
 
-class JsonStylingException : Exception
+class JSLException : Exception
 {
     this(string msg, string file = __FILE__, size_t line = __LINE__)
     {
@@ -12,7 +12,7 @@ class JsonStylingException : Exception
     }
 }
 
-class ThemeParseException : JsonStylingException
+class ThemeParseException : JSLException
 {
     this(string msg, string file = __FILE__, size_t line = __LINE__)
     {

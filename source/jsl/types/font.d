@@ -1,6 +1,6 @@
-module jsonstyling.types.font;
+module jsl.types.font;
 
-import jsonstyling;
+import jsl;
 
 import std.string;
 import std.array;

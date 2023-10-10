@@ -1,7 +1,7 @@
-module jsonstyling.types.color;
+module jsl.types.color;
 
-import jsonstyling.types;
-import jsonstyling.exceptions;
+import jsl.types;
+import jsl.exceptions;
 
 import std.traits;
 import std.algorithm;
