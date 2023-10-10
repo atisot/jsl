@@ -113,6 +113,22 @@ class JsonStylingManager {
         throw new JSLException("No current theme");
     }
 
+    T stateProperty(T)(string styleId, string stateName, string propName)
+    {
+        if (!currentTheme.isNull)
+        {
+            auto prop = findStatePropertyInTheme!T(currentTheme.get, styleId, stateName, propName);
+            if (prop.isNull)
+            {
+                throw new JSLException(
+                    "Property `" ~ propName ~ "` for style `" ~ styleId ~ "` and `" ~ stateName ~ "` state not found");
+            }
+            return prop.get;
+        }
+
+        throw new JSLException("No current theme");
+    }
+
     private Nullable!T findPropertyInTheme(T)(Theme theme, string styleId, string propName)
     {
         auto style = theme.style(styleId);
@@ -135,6 +151,34 @@ class JsonStylingManager {
             if(!parentTheme.isNull)
             {
                 return findPropertyInTheme!T(parentTheme.get, styleId, propName);
+            }
+        }
+
+        return Nullable!T.init;
+    }
+
+    private Nullable!T findStatePropertyInTheme(T)(Theme theme, string styleId, string stateName, string propName)
+    {
+        auto style = theme.style(styleId);
+        if (!style.isNull)
+        {
+            auto prop = style.get.stateProperty!T(stateName, propName);
+            if (!prop.isNull)
+            {
+                return prop;
+            }
+            else if (style.get.parentId !is null)
+            {
+                return findStatePropertyInTheme!T(theme, style.get.parentId, stateName, propName);
+            }
+        }
+
+        if (theme.parentId !is null)
+        {
+            auto parentTheme = this.theme(theme.parentId);
+            if (!parentTheme.isNull)
+            {
+                return findStatePropertyInTheme!T(parentTheme.get, styleId, stateName, propName);
             }
         }
 
