@@ -1,6 +1,7 @@
 module jsonstyling.types.dim;
 
 import jsonstyling.types;
+import jsonstyling.exceptions;
 
 import std.regex;
 import std.string;
@@ -21,83 +22,77 @@ struct Dimension
     {
         Dimension dim;
 
-        // Регулярное выражение для разделения числа и единицы измерения
-        auto re = regex(`^(-?\d+(\.\d+)?)([a-z%]*)$`);
+        auto re = regex(`^(-?\d+(\.\d+)?)([a-z%]*)?$`);
         auto match = matchFirst(input, re);
 
         if (!match)
-            throw new Exception("Invalid format: The input does not match the expected pattern.");
+            throw new ThemeParseException("Invalid dimension format: " ~ input);
 
-        try
+        dim.value = to!float(match[1]);
+
+        if (match[3] == "")
         {
-            dim.value = to!float(match[1]);
-
-            if (match[3] == "")
-            {
-                dim.unit = Unit.PX;
-                if (dim.value != to!int(dim.value)) // Проверка на целое число
-                    throw new Exception("Invalid format: Pixel values must be integers.");
-            }
-            else
-            {
-                switch (match[3])
-                {
-                case "px":
-                    if (dim.value != to!int(dim.value)) // Проверка на целое число
-                        throw new Exception("Invalid format: Pixel values must be integers.");
-                    dim.unit = Unit.PX;
-                    break;
-                case "cm":
-                    dim.unit = Unit.CM;
-                    break;
-                case "mm":
-                    dim.unit = Unit.MM;
-                    break;
-                case "in":
-                    dim.unit = Unit.INCH;
-                    break;
-                case "pt":
-                    dim.unit = Unit.PT;
-                    break;
-                case "pc":
-                    dim.unit = Unit.PC;
-                    break;
-                case "em":
-                    dim.unit = Unit.EM;
-                    break;
-                case "rem":
-                    dim.unit = Unit.REM;
-                    break;
-                case "ex":
-                    dim.unit = Unit.EX;
-                    break;
-                case "ch":
-                    dim.unit = Unit.CH;
-                    break;
-                case "vw":
-                    dim.unit = Unit.VW;
-                    break;
-                case "vh":
-                    dim.unit = Unit.VH;
-                    break;
-                case "vmin":
-                    dim.unit = Unit.VMIN;
-                    break;
-                case "vmax":
-                    dim.unit = Unit.VMAX;
-                    break;
-                case "%":
-                    dim.unit = Unit.PERCENT;
-                    break;
-                default:
-                    throw new Exception("Invalid format: Unknown unit '" ~ match[3] ~ "'.");
-                }
-            }
+            dim.unit = Unit.PX;
+            if (dim.value != to!int(dim.value))
+                throw new ThemeParseException(
+                    "Invalid dimension format with `" ~ input ~ "`: pixel values must be integers.");
         }
-        catch (ConvException)
+        else
         {
-            throw new Exception(
-                "Invalid format: The numeric part of the input is not a valid number.");
+            switch (match[3])
+            {
+            case "px":
+                if (dim.value != to!int(dim.value))
+                    throw new ThemeParseException(
+                        "Invalid dimension format with `" ~ input ~ "`: pixel values must be integers.");
+                dim.unit = Unit.PX;
+                break;
+            case "cm":
+                dim.unit = Unit.CM;
+                break;
+            case "mm":
+                dim.unit = Unit.MM;
+                break;
+            case "in":
+                dim.unit = Unit.INCH;
+                break;
+            case "pt":
+                dim.unit = Unit.PT;
+                break;
+            case "pc":
+                dim.unit = Unit.PC;
+                break;
+            case "em":
+                dim.unit = Unit.EM;
+                break;
+            case "rem":
+                dim.unit = Unit.REM;
+                break;
+            case "ex":
+                dim.unit = Unit.EX;
+                break;
+            case "ch":
+                dim.unit = Unit.CH;
+                break;
+            case "vw":
+                dim.unit = Unit.VW;
+                break;
+            case "vh":
+                dim.unit = Unit.VH;
+                break;
+            case "vmin":
+                dim.unit = Unit.VMIN;
+                break;
+            case "vmax":
+                dim.unit = Unit.VMAX;
+                break;
+            case "%":
+                dim.unit = Unit.PERCENT;
+                break;
+            default:
+                throw new Exception(
+                    "Invalid dimension format with `" ~ input ~ "`: Unknown unit '" ~ match[3] ~ "'.");
+            }
         }
 
         return dim;

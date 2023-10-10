@@ -1,6 +1,7 @@
 module jsonstyling.types.boxshadow;
 
 import jsonstyling.types;
+import jsonstyling.exceptions;
 
 import std.string;
 
@@ -22,6 +23,8 @@ struct BoxShadow
 
         foreach (part; parts)
         {
+            part = part.strip;
+
             if (part == "inset")
             {
                 shadow.inset = true;
@@ -34,7 +37,7 @@ struct BoxShadow
                 continue;
             }
             catch (Exception e)
-            {
+            { // не цвет
             }
 
             try
@@ -53,13 +56,13 @@ struct BoxShadow
                 continue;
             }
             catch (Exception e)
-            {
+            { // не измерение
             }
         }
 
         // Проверяем, что все необходимые поля заполнены
         if (shadow.offsetX.empty || shadow.offsetY.empty)
-            throw new Exception("Invalid box-shadow value: " ~ input);
+            throw new ThemeParseException("Invalid box-shadow value: " ~ input);
 
         return shadow;
     }

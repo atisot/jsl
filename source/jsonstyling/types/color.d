@@ -1,6 +1,7 @@
 module jsonstyling.types.color;
 
 import jsonstyling.types;
+import jsonstyling.exceptions;
 
 import std.traits;
 import std.algorithm;
@@ -134,44 +135,46 @@ struct Color
                     hexValue & 0xFF
                 );
             default:
-                throw new Exception("Invalid hex color format");
+                throw new ThemeParseException("Invalid hex color format: " ~ input);
             }
         }
         else if (matchFirst(input, rgbPattern))
         {
             auto rgbMatch = matchFirst(input, rgbPattern);
             return Color(to!ubyte(rgbMatch[1]),
-            to!ubyte(rgbMatch[2]),
-            to!ubyte(rgbMatch[3]),
-            defaultAlpha);
+                to!ubyte(rgbMatch[2]),
+                to!ubyte(rgbMatch[3]),
+                defaultAlpha
+            );
         }
         else if (matchFirst(input, rgbaPattern))
         {
             auto rgbaMatch = matchFirst(input, rgbaPattern);
             return Color(to!ubyte(rgbaMatch[1]),
-            to!ubyte(rgbaMatch[2]),
-            to!ubyte(rgbaMatch[3]),
-            to!ubyte(round(to!float(rgbaMatch[4]) * 255)));
+                to!ubyte(rgbaMatch[2]),
+                to!ubyte(rgbaMatch[3]),
+                to!ubyte(round(to!float(rgbaMatch[4]) * 255))
+            );
         }
         else if (matchFirst(input, hslPattern))
         {
             auto hslMatch = matchFirst(input, hslPattern);
             return hslToRgb(to!float(hslMatch[1]),
-            to!float(hslMatch[2]) / 100.0,
-            to!float(hslMatch[3]) / 100.0);
+                to!float(hslMatch[2]) / 100.0,
+                to!float(hslMatch[3]) / 100.0
+            );
         }
         else if (matchFirst(input, hslaPattern))
         {
             auto hslaMatch = matchFirst(input, hslaPattern);
             return hslToRgb(to!float(hslaMatch[1]),
-            to!float(hslaMatch[2]) / 100.0,
-            to!float(hslaMatch[3]) / 100.0,
-            to!ubyte(round(to!float(hslaMatch[4]) * 255)));
+                to!float(hslaMatch[2]) / 100.0,
+                to!float(hslaMatch[3]) / 100.0,
+                to!ubyte(round(to!float(hslaMatch[4]) * 255))
+            );
         }
-        else
-        {
-            throw new Exception("Invalid color format");
-        }
+        
+        throw new ThemeParseException("Invalid hex color format: " ~ input);
     }
 
     unittest

@@ -47,31 +47,24 @@ class Theme
     static Theme parse(JSONValue json)
     {
         Theme theme;
+        
+        string id = null;
+        string parentId = null;
 
-        try
+        if ("id" in json && !json["id"].isNull)
+            id = json["id"].str;
+
+        if ("parent" in json && !json["parent"].isNull)
+            parentId = json["parent"].str;
+
+        theme = new Theme(id, parentId);
+
+        if ("styles" in json)
         {
-            string id = null;
-            string parentId = null;
-
-            if("id" in json && !json["id"].isNull)
-                id = json["id"].str;
-
-            if("parent" in json && !json["parent"].isNull)
-                parentId = json["parent"].str;
-            
-            theme = new Theme(id, parentId);
-
-            if("styles" in json)
+            foreach (string name, value; json["styles"].object)
             {
-                foreach (string name, value; json["styles"].object)
-                {
-                    theme.style(Style.parse(value, name));
-                }
+                theme.style(Style.parse(value, name));
             }
-        }
-        catch (Exception e)
-        {
-            throw new Exception("Error parsing theme: " ~ e.msg);
         }
 
         return theme;

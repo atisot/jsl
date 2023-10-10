@@ -82,46 +82,6 @@ bool canFindProperty(string value)
 }
 
 /**
- * Retrieves a list of supported property names.
- *
- * Returns:
- *   An array of string containing the property names.
- */
-string[] propertyNames()
-{
-    string[] p;
-    for (size_t i = 0; i < props.length - 1; i += 2)
-    {
-        p ~= props[i];
-    }
-    return p;
-}
-
-/**
- * Retrieves the type of a given property name.
- *
- * Params:
- *   name = The property name.
- *
- * Returns:
- *   A string representing the type of the property.
- *
- * Throws:
- *   An exception if the property name is not found.
- */
-string propertyType(string name)
-{
-    for (size_t i = 0; i < props.length; i += 2)
-    {
-        if (props[i] == name)
-        {
-            return props[i + 1];
-        }
-    }
-    throw new Exception("Property not found: " ~ name);
-}
-
-/**
  * Generates methods for setting style properties based on the provided properties list.
  *
  * Params:

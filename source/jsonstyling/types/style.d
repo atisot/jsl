@@ -9,6 +9,7 @@ import std.conv;
 
 import jsonstyling.types;
 import jsonstyling.utils;
+import jsonstyling.exceptions;
 
 /**
  * Represents a style definition with properties and states.
@@ -58,7 +59,7 @@ class Style
     void property(T)(string name, T value)
     {
         if(!canFindProperty(name))
-            throw new Exception(format("The %s style property is not valid", name));
+            throw new JsonStylingException(format("The %s style property is not valid", name));
 
         auto prop = new Property!T(value);
         _properties[name] = prop;
@@ -234,48 +235,41 @@ class Style
     {
         Style.StyleBuilder styleBuilder;
 
-        try
+        if ("parent" in json && json["parent"].type == JSONType.string)
         {
-            if ("parent" in json && json["parent"].type == JSONType.string)
-            {
-                styleBuilder = Style.create(styleId, json["parent"].str);
-            }
-            else
-            {
-                styleBuilder = Style.create(styleId);
-            }
+            styleBuilder = Style.create(styleId, json["parent"].str);
+        }
+        else
+        {
+            styleBuilder = Style.create(styleId);
+        }
 
-            if ("properties" in json && json["properties"].type == JSONType.object)
+        if ("properties" in json && json["properties"].type == JSONType.object)
+        {
+            foreach (string propName, propValue; json["properties"].object)
             {
-                foreach (string propName, propValue; json["properties"].object)
+                if (canFindProperty(propName))
                 {
-                    if (canFindProperty(propName))
+                    switch (propName)
                     {
-                        switch (propName)
-                        {
-                            mixin(Style.generateSwitchCases());
-                            default:
-                                throw new Exception("Unknown property:" ~ propName);
-                        }
-                    }
-                    else 
-                    {
-                        throw new Exception("Unknown property:" ~ propName);
+                        mixin(Style.generateSwitchCases());
+                    default:
+                        throw new ThemeParseException("Unknown property: " ~ propName);
                     }
                 }
-            }
-
-            if ("states" in json && json["states"].type == JSONType.object)
-            {
-                foreach (string stateName, state; json["states"].object)
+                else
                 {
-                    styleBuilder.state(stateName, Style.parse(state, styleId));
+                    throw new ThemeParseException("Unknown property: " ~ propName);
                 }
             }
         }
-        catch (Exception e)
+
+        if ("states" in json && json["states"].type == JSONType.object)
         {
-            throw new Exception("Error in style json: " ~ e.msg);
+            foreach (string stateName, state; json["states"].object)
+            {
+                styleBuilder.state(stateName, Style.parse(state, styleId));
+            }
         }
 
         return styleBuilder.build;
