@@ -1,5 +1,6 @@
-name "jsonstyling"
-description "Json styling library"
+name "jsl"
+description "The JSON styling library"
 authors "Bagomot"
 copyright "Copyright © 2023, Atisot"
 license "MIT License"
+targetType "sourceLibrary"
