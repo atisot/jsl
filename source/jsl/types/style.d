@@ -292,10 +292,6 @@ class Style
         {
             return to!T(propVal.toUpper);
         }
-        else static if (isArray!T && (T.stringof == Dimensions.stringof))
-        {
-            return Dimension.parseDims(propVal);
-        }
         else
         {
             return T.parse(propVal);

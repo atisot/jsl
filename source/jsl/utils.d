@@ -14,9 +14,6 @@ import std.conv;
 
 import jsl;
 
-/// Alias for an array of `Dimension` objects.
-alias Dimensions = Dimension[];
-
 /**
  * A list of supported style properties and their corresponding types.
  */
