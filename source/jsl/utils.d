@@ -81,7 +81,7 @@ bool canFindProperty(string value)
 
 template generateEnumProperties(string[] props)
 {
-    const dchar[] generateEnumProperties = "enum StyleProperties : string {\n" ~ props
+    const dchar[] generateEnumProperties = "enum StyleProperty : string {\n" ~ props
         .chunks(2)
         .map!(p => kebab2camel(p[0]) ~ " = \"" ~ p[0] ~ "\",")
         .joiner("\n")
