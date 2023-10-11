@@ -98,32 +98,21 @@ class JsonStylingManager {
         _themes.clear();
     }
 
-    T property(T)(string styleId, string propName)
+    Nullable!T property(T)(string styleId, string propName)
     {
         if(!currentTheme.isNull)
         {
-            auto prop = findPropertyInTheme!T(currentTheme.get, styleId, propName);
-            if (prop.isNull)
-            {
-                throw new JSLException("Property `" ~ propName ~ "` for style `" ~ styleId ~ "` not found");
-            }
-            return prop.get;
+            return findPropertyInTheme!T(currentTheme.get, styleId, propName);
         }
 
         throw new JSLException("No current theme");
     }
 
-    T stateProperty(T)(string styleId, string stateName, string propName)
+    Nullable!T stateProperty(T)(string styleId, string stateName, string propName)
     {
         if (!currentTheme.isNull)
         {
-            auto prop = findStatePropertyInTheme!T(currentTheme.get, styleId, stateName, propName);
-            if (prop.isNull)
-            {
-                throw new JSLException(
-                    "Property `" ~ propName ~ "` for style `" ~ styleId ~ "` and `" ~ stateName ~ "` state not found");
-            }
-            return prop.get;
+            return findStatePropertyInTheme!T(currentTheme.get, styleId, stateName, propName);
         }
 
         throw new JSLException("No current theme");
