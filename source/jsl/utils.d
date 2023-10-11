@@ -14,9 +14,6 @@ import std.conv;
 
 import jsl;
 
-/// Alias for an array of `Dimension` objects.
-alias Dimensions = Dimension[];
-
 /**
  * A list of supported style properties and their corresponding types.
  */
@@ -48,6 +45,19 @@ enum props = cast(string[])
     "cursor"                        , Cursor.stringof
 ];
 
+string propertyType(string propName)
+{
+    for (size_t i = 0; i < props.length - 1; i += 2)
+    {
+        if (props[i] == propName)
+        {
+            return props[i+1];
+        }
+    }
+
+    throw new JSLException("Unknown property: " ~ propName);
+}
+
 /**
  * Checks if the given property name exists in the supported properties list.
  *
@@ -67,6 +77,15 @@ bool canFindProperty(string value)
         }
     }
     return false;
+}
+
+template generateEnumProperties(string[] props)
+{
+    const dchar[] generateEnumProperties = "enum StyleProperties : string {\n" ~ props
+        .chunks(2)
+        .map!(p => kebab2camel(p[0]) ~ " = \"" ~ p[0] ~ "\",")
+        .joiner("\n")
+        .array[0..$-1] ~ "\n}";
 }
 
 /**

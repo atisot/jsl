@@ -155,59 +155,145 @@ struct Dimension
         }
         assert(exceptionThrown);
     }
+}
 
-    static Dimension[] parseDims(string input)
+struct Dimensions
+{
+    Dimension[4] box;
+    alias box this;
+
+    this(Dimension value)
+    {
+        box = [value, value, value, value];
+    }
+
+    this(Dimension value1, Dimension value2)
+    {
+        box = [value1, value2, value1, value2];
+    }
+
+    this(Dimension value1, Dimension value2, Dimension value3)
+    {
+        box = [value1, value2, value3, value2];
+    }
+
+    this(Dimension value1, Dimension value2, Dimension value3, Dimension value4)
+    {
+        box = [value1, value2, value3, value4];
+    }
+
+    this(float value)
+    {
+        box = [
+            Dimension(value), Dimension(value), Dimension(value), Dimension(value)
+        ];
+    }
+
+    this(float value1, float value2)
+    {
+        box = [
+            Dimension(value1), Dimension(value2), Dimension(value1),
+            Dimension(value2)
+        ];
+    }
+
+    this(float value1, float value2, float value3)
+    {
+        box = [
+            Dimension(value1), Dimension(value2), Dimension(value3),
+            Dimension(value2)
+        ];
+    }
+
+    this(float value1, float value2, float value3, float value4)
+    {
+        box = [
+            Dimension(value1), Dimension(value2), Dimension(value3),
+            Dimension(value4)
+        ];
+    }
+
+    auto top() @property const
+    {
+        return box[0];
+    }
+
+    auto right() @property const
+    {
+        return box[1];
+    }
+
+    auto bottom() @property const
+    {
+        return box[2];
+    }
+
+    auto left() @property const
+    {
+        return box[3];
+    }
+
+    static Dimensions parse(string input)
     {
         auto components = input.replace(";", "").split();
 
-        if (components.length > 4)
-        {
-            throw new ThemeParseException("Invalid input: More than 4 values provided for: " ~ input);
-        }
-
-        Dimension[] dimensions;
-
+        Dimension[] temp;
         foreach (component; components)
         {
-            dimensions ~= Dimension.parse(component);
+            temp ~= Dimension.parse(component.strip);
         }
 
-        return dimensions;
+        Dimensions dims;
+        switch (temp.length)
+        {
+            case 1:
+                dims = Dimensions(temp[0]);
+                break;
+            case 2:
+                dims = Dimensions(temp[0], temp[1]);
+                break;
+            case 3:
+                dims = Dimensions(temp[0], temp[1], temp[2]);
+                break;
+            case 4:
+                dims = Dimensions(temp[0], temp[1], temp[2], temp[3]);
+                break;
+            default:
+                throw new ThemeParseException("Invalid input: More than 4 values provided for: " ~ input);
+        }
+
+        return dims;
     }
 
     unittest
     {
         // Тест с одним значением
-        auto result1 = parseDims("1rem");
-        assert(result1.length == 1);
-        assert(result1[0] == Dimension(1, Unit.REM));
+        Dimensions result1 = Dimensions.parse("1rem");
+        assert(result1.top == Dimension(1, Unit.REM));
 
         // Тест с двумя значениями
-        auto result2 = parseDims("1rem 2rem");
-        assert(result2.length == 2);
-        assert(result2[0] == Dimension(1, Unit.REM));
-        assert(result2[1] == Dimension(2, Unit.REM));
+        Dimensions result2 = Dimensions.parse("1rem 2rem");
+        assert(result2.top == Dimension(1, Unit.REM));
+        assert(result2.right == Dimension(2, Unit.REM));
 
         // Тест с тремя значениями
-        auto result3 = parseDims("1rem 2rem 3rem");
-        assert(result3.length == 3);
-        assert(result3[0] == Dimension(1, Unit.REM));
-        assert(result3[1] == Dimension(2, Unit.REM));
-        assert(result3[2] == Dimension(3, Unit.REM));
+        Dimensions result3 = Dimensions.parse("1rem 2rem 3rem");
+        assert(result3.top == Dimension(1, Unit.REM));
+        assert(result3.left == Dimension(2, Unit.REM));
+        assert(result3.bottom == Dimension(3, Unit.REM));
 
         // Тест с четырьмя значениями
-        auto result4 = parseDims("1rem 2rem 3rem 4rem");
-        assert(result4.length == 4);
-        assert(result4[0] == Dimension(1, Unit.REM));
-        assert(result4[1] == Dimension(2, Unit.REM));
-        assert(result4[2] == Dimension(3, Unit.REM));
-        assert(result4[3] == Dimension(4, Unit.REM));
+        Dimensions result4 = Dimensions.parse("1rem 2rem 3rem 4rem");
+        assert(result4.top == Dimension(1, Unit.REM));
+        assert(result4.right == Dimension(2, Unit.REM));
+        assert(result4.bottom == Dimension(3, Unit.REM));
+        assert(result4.left == Dimension(4, Unit.REM));
 
         // Тест с неверным количеством значений
         bool exceptionThrown = false;
         try
         {
-            auto result5 = parseDims("1rem 2rem 3rem 4rem 5rem");
+            Dimensions result5 = Dimensions.parse("1rem 2rem 3rem 4rem 5rem");
         }
         catch (Exception e)
         {

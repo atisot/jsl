@@ -254,12 +254,12 @@ class Style
                     {
                         mixin(Style.generateSwitchCases());
                     default:
-                        throw new ThemeParseException("Unknown property: " ~ propName);
+                        throw new JSLException("Unknown property: " ~ propName);
                     }
                 }
                 else
                 {
-                    throw new ThemeParseException("Unknown property: " ~ propName);
+                    throw new JSLException("Unknown property: " ~ propName);
                 }
             }
         }
@@ -291,10 +291,6 @@ class Style
         static if (isSimpleType!T || isEnum!T)
         {
             return to!T(propVal.toUpper);
-        }
-        else static if (isArray!T && (T.stringof == Dimensions.stringof))
-        {
-            return Dimension.parseDims(propVal);
         }
         else
         {

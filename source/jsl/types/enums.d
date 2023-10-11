@@ -1,5 +1,10 @@
 module jsl.types.enums;
 
+import jsl.utils;
+
+mixin(generateEnumProperties!(props));
+//pragma(msg, generateEnumProperties!(props));
+
 enum VAlign
 {
     TOP,
