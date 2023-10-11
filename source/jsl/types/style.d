@@ -254,12 +254,12 @@ class Style
                     {
                         mixin(Style.generateSwitchCases());
                     default:
-                        throw new ThemeParseException("Unknown property: " ~ propName);
+                        throw new JSLException("Unknown property: " ~ propName);
                     }
                 }
                 else
                 {
-                    throw new ThemeParseException("Unknown property: " ~ propName);
+                    throw new JSLException("Unknown property: " ~ propName);
                 }
             }
         }
