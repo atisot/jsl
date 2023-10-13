@@ -79,14 +79,23 @@ enum Colors : Color
 
 struct Color
 {
-    /// Color red value
-    ubyte r;
-    /// Color green value
-    ubyte g;
-    /// Color blue value
-    ubyte b;
-    /// Color alpha value
-    ubyte a;
+    version (RAYLIB)
+    {
+        import bindbc.raylib.types;
+        bindbc.raylib.types.Color color;
+        alias color this;
+    }
+    else
+    {
+        /// Color red value
+        ubyte r;
+        /// Color green value
+        ubyte g;
+        /// Color blue value
+        ubyte b;
+        /// Color alpha value
+        ubyte a;
+    }
 
     static Color parse(string input)
     {

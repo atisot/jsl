@@ -4,3 +4,6 @@ authors "Bagomot"
 copyright "Copyright © 2023, Atisot"
 license "MIT License"
 targetType "sourceLibrary"
+configuration "RAYLIB" {
+    dependency "bindbc-raylib" version="~>0.9.1"
+}
