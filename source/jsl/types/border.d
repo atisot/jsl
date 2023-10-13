@@ -16,6 +16,11 @@ struct Border
     Color color;
     BorderStyle style;
 
+    bool empty()
+    {
+        return width.value <= 0;
+    }
+
     static Border parse(string input)
     {
         auto components = input.replace(";", "").split();
@@ -102,15 +107,4 @@ enum BorderStyle
     DASHED,
     DOTTED,
     DOUBLE
-}
-
-struct BorderRadius
-{
-    Dimension horizontal;
-    Dimension vertical;
-
-    static BorderRadius parse(string input)
-    {
-        return BorderRadius(); //TODO: add parser
-    }
 }
