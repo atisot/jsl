@@ -159,19 +159,27 @@ struct Color
     version (RAYLIB)
     {
         import bindbc.raylib.types;
+
         bindbc.raylib.types.Color color;
         alias color this;
+
     }
-    else
+
+    /// Color red value
+    ubyte r;
+    /// Color green value
+    ubyte g;
+    /// Color blue value
+    ubyte b;
+    /// Color alpha value
+    ubyte a;
+
+    this(ubyte r, ubyte g, ubyte b, ubyte a = 255)
     {
-        /// Color red value
-        ubyte r;
-        /// Color green value
-        ubyte g;
-        /// Color blue value
-        ubyte b;
-        /// Color alpha value
-        ubyte a;
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
     }
 
     static Color parse(string input)
