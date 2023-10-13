@@ -9,14 +9,13 @@ import std.string;
 struct Dimension
 {
     float value;
-    Unit unit = Unit.NONE;
+    Unit unit;
 
-    bool empty()
+    this(float value, Unit unit = Unit.PX)
     {
-        return (unit == Unit.NONE);
+        this.value = value;
+        this.unit = unit;
     }
-
-
 
     static Dimension parse(string input)
     {
@@ -305,7 +304,6 @@ struct Dimensions
 
 enum Unit : string
 {
-    NONE = "none",
     PX = "px",
     CM = "cm",
     MM = "mm",

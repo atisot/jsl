@@ -17,7 +17,16 @@ struct BoxShadow
     static BoxShadow parse(string input)
     {
         BoxShadow shadow;
+
+        // Установка значений по умолчанию
+        shadow.offsetX = Dimension(0);
+        shadow.offsetY = Dimension(0);
+        shadow.blurRadius = Dimension(0);
+        shadow.spreadRadius = Dimension(0);
+        shadow.color = Color(0, 0, 0, 0); // предположим, что это черный цвет
         shadow.inset = false;
+
+        int dimensionCount = 0;
 
         auto parts = input.split();
 
@@ -44,14 +53,25 @@ struct BoxShadow
             {
                 Dimension dim = Dimension.parse(part);
 
-                if (shadow.offsetX.empty)
+                switch (dimensionCount)
+                {
+                case 0:
                     shadow.offsetX = dim;
-                else if (shadow.offsetY.empty)
+                    break;
+                case 1:
                     shadow.offsetY = dim;
-                else if (shadow.blurRadius.empty)
+                    break;
+                case 2:
                     shadow.blurRadius = dim;
-                else if (shadow.spreadRadius.empty)
+                    break;
+                case 3:
                     shadow.spreadRadius = dim;
+                    break;
+                default:
+                    throw new ThemeParseException("Too many dimensions provided");
+                }
+
+                dimensionCount++;
 
                 continue;
             }
@@ -60,9 +80,11 @@ struct BoxShadow
             }
         }
 
-        // Проверяем, что все необходимые поля заполнены
-        if (shadow.offsetX.empty || shadow.offsetY.empty)
-            throw new ThemeParseException("Invalid box-shadow value: " ~ input);
+        // Проверка на минимальное количество измерений (должно быть хотя бы 2: offsetX и offsetY)
+        if (dimensionCount < 2)
+        {
+            throw new ThemeParseException("Insufficient dimensions provided");
+        }
 
         return shadow;
     }
@@ -72,7 +94,7 @@ struct BoxShadow
         // Тестирование базового случая
         {
             auto shadow = BoxShadow.parse("10px 10px 5px 5px #888888");
-            assert(shadow.offsetX == Dimension.parse("10px"));
+            assert(shadow.offsetX == Dimension(10));
             assert(shadow.offsetY == Dimension.parse("10px"));
             assert(shadow.blurRadius == Dimension.parse("5px"));
             assert(shadow.spreadRadius == Dimension.parse("5px"));
@@ -97,7 +119,7 @@ struct BoxShadow
             assert(shadow.offsetX == Dimension.parse("10px"));
             assert(shadow.offsetY == Dimension.parse("10px"));
             assert(shadow.blurRadius == Dimension.parse("5px"));
-            assert(shadow.spreadRadius.empty);
+            assert(shadow.spreadRadius.value == 0);
             assert(shadow.color == Color.parse("#888888"));
             assert(shadow.inset == false);
         }
@@ -107,8 +129,8 @@ struct BoxShadow
             auto shadow = BoxShadow.parse("10px 10px #888888");
             assert(shadow.offsetX == Dimension.parse("10px"));
             assert(shadow.offsetY == Dimension.parse("10px"));
-            assert(shadow.blurRadius.empty);
-            assert(shadow.spreadRadius.empty);
+            assert(shadow.blurRadius.value == 0);
+            assert(shadow.spreadRadius.value == 0);
             assert(shadow.color == Color.parse("#888888"));
             assert(shadow.inset == false);
         }
