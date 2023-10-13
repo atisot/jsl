@@ -163,23 +163,73 @@ struct Color
         bindbc.raylib.types.Color color;
         alias color this;
 
+        this(ubyte r, ubyte g, ubyte b, ubyte a = 255)
+        {
+            color.r = r;
+            color.g = g;
+            color.b = b;
+            color.a = a;
+        }
+
+
+        void r(ubyte value) @property
+        {
+            color.r = value;
+        }
+
+        auto r() @property const
+        {
+            return color.r;
+        }
+
+        void g(ubyte value) @property
+        {
+            color.g = value;
+        }
+
+        auto g() @property const
+        {
+            return color.g;
+        }
+
+        void b(ubyte value) @property
+        {
+            color.b = value;
+        }
+
+        auto b() @property const
+        {
+            return color.b;
+        }
+
+        void a(ubyte value) @property
+        {
+            color.a = value;
+        }
+
+        auto a() @property const
+        {
+            return color.a;
+        }
     }
-
-    /// Color red value
-    ubyte r;
-    /// Color green value
-    ubyte g;
-    /// Color blue value
-    ubyte b;
-    /// Color alpha value
-    ubyte a;
-
-    this(ubyte r, ubyte g, ubyte b, ubyte a = 255)
+    else
     {
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.a = a;
+        /// Color red value
+        ubyte r;
+        /// Color green value
+        ubyte g;
+        /// Color blue value
+        ubyte b;
+        /// Color alpha value
+        ubyte a;
+
+        this(ubyte r, ubyte g, ubyte b, ubyte a = 255)
+        {
+            this.r = r;
+            this.g = g;
+            this.b = b;
+            this.a = a;
+        }
     }
 
     static Color parse(string input)
