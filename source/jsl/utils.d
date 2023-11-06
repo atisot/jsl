@@ -30,6 +30,7 @@ enum props = cast(string[])
     "border"                        , Border.stringof,
     "border-radius"                 , BorderRadius.stringof,
     "background-color"              , Color.stringof,
+    "background-gradient"           , Gradient.stringof,
     "background-image"              , string.stringof,
     "opacity"                       , float.stringof,
     "visible"                       , bool.stringof,

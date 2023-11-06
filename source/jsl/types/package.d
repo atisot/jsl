@@ -16,6 +16,7 @@ public
     import jsl.types.border;
     import jsl.types.borderradius;
     import jsl.types.boxshadow;
+    import jsl.types.gradient;
     import jsl.types.font;
     import jsl.types.property;
     import jsl.types.style;

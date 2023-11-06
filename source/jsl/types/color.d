@@ -7,6 +7,7 @@ import std.traits;
 import std.algorithm;
 import std.string;
 import std.math;
+import std.array;
 
 enum Colors : Color
 {
@@ -154,6 +155,58 @@ struct Color
             this.b = b;
             this.a = a;
         }
+    }
+
+    bool equals(Color other)
+    {
+        return r == other.r && g == other.g && b == other.b && a == other.a;
+    }
+
+    static string[] splitColors(const string colorsString)
+    {
+        string[] colors;
+        string buffer;
+        int parenthesisLevel = 0;
+
+        foreach (char c; colorsString)
+        {
+            switch (c)
+            {
+            case ',':
+                // Only split at comma if not within parentheses
+                if (parenthesisLevel == 0)
+                {
+                    colors ~= buffer.strip(); // Add the trimmed buffer to colors
+                    buffer = "";
+                }
+                else
+                {
+                    buffer ~= c;
+                }
+                break;
+
+            case '(':
+                parenthesisLevel++;
+                buffer ~= c;
+                break;
+
+            case ')':
+                parenthesisLevel--;
+                buffer ~= c;
+                break;
+
+            default:
+                buffer ~= c;
+                break;
+            }
+        }
+
+        if (!buffer.empty)
+        { // Add the last color (if any)
+            colors ~= buffer.strip(); // Make sure to trim the buffer before adding
+        }
+
+        return colors;
     }
 
     static Color parse(string input)
