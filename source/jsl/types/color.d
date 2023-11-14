@@ -83,9 +83,9 @@ struct Color
 {
     version (RAYLIB)
     {
-        import bindbc.raylib.types;
+        import raylib;
 
-        bindbc.raylib.types.Color color;
+        raylib.Color color;
         alias color this;
 
         this(ubyte r, ubyte g, ubyte b, ubyte a = 255)
