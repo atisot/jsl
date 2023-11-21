@@ -5,5 +5,5 @@ copyright "Copyright © 2023, Atisot"
 license "MIT License"
 targetType "sourceLibrary"
 configuration "RAYLIB" {
-    dependency "raylib-d" version="~>4.5.2"
+    dependency "raylib-d" version="~>5.0.0"
 }
