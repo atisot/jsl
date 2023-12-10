@@ -13,9 +13,11 @@ struct FontFamily
 
     static FontFamily parse(string input)
     {
+        if(input.empty)
+            throw new Exception("FontFamily input line is empty");
+        
         FontFamily result;
 
-        // Разбиваем строку по запятой
         auto parts = input.split(",").array;
 
         foreach (key, part; parts)
@@ -23,11 +25,17 @@ struct FontFamily
             parts[key] = part.strip;
         }
 
-        result.type = parts[$-1];
-
-        parts = parts[0 .. $-1];
-
-        result.fonts = parts;
+        if(parts.length > 1)
+        {
+            result.type = parts[$ - 1];
+            parts = parts[0 .. $ - 1];
+            result.fonts = parts;
+        }
+        else 
+        {
+            result.fonts ~= parts[0].strip;
+            result.type = "sans-serif";
+        }
 
         return result;
     }

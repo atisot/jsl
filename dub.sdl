@@ -6,4 +6,5 @@ license "MIT License"
 targetType "sourceLibrary"
 configuration "RAYLIB" {
     dependency "raylib-d" version="~>5.0.0"
+    libs "raylib"
 }
