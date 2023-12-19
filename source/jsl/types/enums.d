@@ -32,7 +32,8 @@ enum Cursor
     TEXT,
     WAIT,
     CROSSHAIR,
-    NOT_ALLOWED
+    NOT_ALLOWED,
+    CUSTOM
 }
 
 enum FontStyle
