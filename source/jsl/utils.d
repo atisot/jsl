@@ -39,7 +39,7 @@ enum props = cast(string[])
     "horizontal-align"              , HAlign.stringof,
     "box-shadow"                    , BoxShadow.stringof,
     "text-color"                    , Color.stringof,
-    "font-family"                   , FontFamily.stringof,
+    "font-id"                       , string.stringof,
     "font-size"                     , Dimension.stringof,
     "font-weight"                   , FontWeight.stringof,
     "font-style"                    , FontStyle.stringof,
